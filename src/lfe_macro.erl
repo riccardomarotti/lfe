@@ -680,6 +680,9 @@ exp_predef([backquote,Bq], _, St) ->            %We do this here.
 exp_predef(['++'|Abody], _, St) ->
     Exp = exp_append(Abody),
     {yes,Exp,St};
+exp_predef(['++*'|Abody], _, St) ->
+    Exp = exp_prefix(Abody),
+    {yes,Exp,St};
 exp_predef(['?'|As], _, St) ->
     Omega = [omega,omega],
     Exp = case As of
@@ -1000,6 +1003,15 @@ exp_append(Args) ->
         [E|Es] -> exp_bif('++', [E,exp_append(Es)]);
         [] -> []
     end.
+
+%% exp_prefix(Args) -> Expansion.
+%%  Expand ++* in such a way as to allow its use in patterns.
+%%  Handle lists of numbers (strings) explicitly, otherwise
+%%  default to exp_append/1.
+
+exp_prefix([[N|Ns]|Es]) when is_number(N) -> [cons,N,['++*',Ns|Es]];
+exp_prefix([[]|Es]) -> ['++*'|Es];
+exp_prefix(Args) -> exp_append(Args).
 
 %% exp_list_star(ListBody) -> Cons.
 
