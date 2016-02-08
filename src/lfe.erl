@@ -26,7 +26,7 @@
 
 -export(['LFE-EXPAND-USER-MACRO'/3]).
 
-%% 'LFE-EXPAND-USER-MACRO'(Call, Env)
+%% 'LFE-EXPAND-USER-MACRO'(Name, Args, Env) -> {yes,Expansion} | no.
 %%  A smart implementation of this where we call the lfe_macro module
 %%  to expand and check for us. Using an empty environment ensures
 %%  only predefined macros are used.
